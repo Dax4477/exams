@@ -3,64 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pure Fullscreen Live Stream</title>
+    <title>Live Match - Fullscreen</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
 </head>
-<body class="bg-black w-screen h-screen overflow-hidden m-0 p-0 relative">
+<body class="bg-black w-screen h-screen overflow-hidden m-0 p-0">
 
-    <video id="signage-live-stream" class="absolute top-0 left-0 w-full h-full object-cover" autoplay muted playsinline></video>
-
-    <script>
-        const video = document.getElementById('signage-live-stream');
-        
-        // The live video feed URL (Public Red Bull TV stream)
-        const streamUrl = 'https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8';
-
-        // Check browser compatibility for HLS.js
-        if (Hls.isSupported()) {
-            
-            // Configure player with optimized memory limits for Raspberry Pi 24/7 loops
-            const hls = new Hls({
-                maxMaxBufferLength: 30, 
-                lowLatencyMode: true
-            });
-            
-            hls.loadSource(streamUrl);
-            hls.attachMedia(video);
-            
-            hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                video.muted = true; // Required to allow autoplay on boot without a user click
-                video.play();
-            });
-            
-            // Automatic Watchdog: Auto-recovers the feed if the internet drops
-            hls.on(Hls.Events.ERROR, function (event, data) {
-                if (data.fatal) {
-                    switch (data.type) {
-                        case Hls.ErrorTypes.NETWORK_ERROR:
-                            console.warn("Network interrupted. Attempting reconnection...");
-                            hls.startLoad();
-                            break;
-                        case Hls.ErrorTypes.MEDIA_ERROR:
-                            console.warn("Media decoding glitch. Recovering frames...");
-                            hls.recoverMediaError();
-                            break;
-                        default:
-                            hls.destroy();
-                            break;
-                    }
-                }
-            });
-            
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            // Native fallback for Safari/macOS testing
-            video.src = streamUrl;
-            video.addEventListener('loadedmetadata', function() {
-                video.play();
-            });
-        }
-    </script>
+    <iframe 
+        src="https://vdo.ninja/?view=hHDDUyg&autoplay=1&clean=1" 
+        class="w-full h-full border-none m-0 p-0 block"
+        allow="autoplay; fullscreen">
+    </iframe>
 
 </body>
 </html>
